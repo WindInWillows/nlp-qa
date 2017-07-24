@@ -1,3 +1,8 @@
+from jieba import analyse
+
+tfidf = analyse.extract_tags
+textrank = analyse.textrank
+
 TRAIN_DATA = 'data/training.data'
 DEV_DATA = 'data/develop.data'
 
@@ -45,9 +50,38 @@ class DataReader:
         print(self.wr_ans[:100])
         # pass
 
+    def fix(self,qu,ans):
+        keys = tfidf(qu)
+        keys2 = textrank(qu)
+        klen = min(len(keys2), len(keys))
+        # for i in range(klen):
+
+        m = 0
+        for i in range(len(ans)):
+            t = 0
+            for k in range(len(keys)):
+                t += 1 / (k + 1) * (1 if keys[k] in ans[i] else 0)
+            for k in range(len(keys2)):
+                t += 1 / (k + 1) * (1 if keys2[k] in ans[i] else 0)
+            m = max(t, m)
+        return m
+
+    def test(self):
+        count = 0
+        for i in range(len(self.question)):
+            cor = self.fix(self.question[i], self.cor_ans[i])
+            wr = self.fix(self.question[i], self.wr_ans[i])
+            if wr < cor:
+                count += 1
+        print(count/len(self.question))
+
 
 if __name__ == '__main__':
-    dr = DataReader(DEV_DATA)
+    dr = DataReader(TRAIN_DATA)
     dr.filt()
-    dr.show()
+    dr.test()
+
+
+
+
 
