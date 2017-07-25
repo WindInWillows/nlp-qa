@@ -5,6 +5,7 @@ import jieba.posseg as pseg
 import time
 import word2vec
 from jieba import analyse
+import numpy
 
 tfidf = analyse.extract_tags
 textrank = analyse.textrank
@@ -215,7 +216,7 @@ class DataProcess:
             self.wr_ans_vec.append(wlst)
             # f.write('%s,%s,%s\n'%(str(qlst), str(clst), str(wlst)))
 
-            res = '\r%.2f剩余时间：%.2f'%(i/len(self.qu)*100, ((len(self.qu))-i) * (time.time()-cur))
+            res = '\r%.2f'%(i/len(self.qu)*100)
             sys.stdout.write(res)
         # f.close()
         print('%.2f:词向量填充完成，写入文件完成'%(time.time()-now))
@@ -274,5 +275,6 @@ if __name__ == '__main__':
     # dp.save_word()
     # dp.word_vector()
     dp.gene_wordvec()
+    print(type(dp.qu_vec[0][0]), dp.qu_vec[0][0])
     # model = word2vec.load(dp.bin_file)
 
